@@ -10,14 +10,14 @@
 - [x] README with Windows PowerShell setup instructions
 - [ ] GitHub repository connected and initial commit pushed
 
-## Phase 1 — Supabase Database & Authentication
+## Phase 1 — Neon Database & Authentication
 
-- Create Supabase development project
-- Configure Supabase Auth
-- Initialize Supabase CLI locally
+- Create Neon development project and get connection string
+- Configure authentication provider (NextAuth.js, credentials, or Clerk)
+- Install Drizzle ORM + @neondatabase/serverless
 - Initial migration: `profiles`, `organizations`, `organization_members`, `roles`
 - Business tables with organization ownership from the start
-- Enable RLS and create policies for each table
+- Enable RLS and create policies for each table via SQL
 - Seed data for development
 - Test signed-out, authorized, and cross-organization access
 - Commit migrations and generated database types

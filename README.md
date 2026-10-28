@@ -8,7 +8,8 @@ An internal tool that manages the full BD lifecycle — lead import, qualificati
 
 - Next.js App Router, TypeScript
 - Tailwind CSS
-- Supabase PostgreSQL + Auth (Phase 1+)
+- Neon PostgreSQL + Drizzle ORM (Phase 1+)
+- Separate authentication provider (Phase 1+)
 - Ollama for local AI (Phase 3+)
 - Zero mandatory paid services for the MVP
 
@@ -35,7 +36,9 @@ npm install
 Copy-Item .env.example .env.local
 
 # 4. Edit .env.local with your own values (never commit it)
-# Not required for Phase 0; Supabase and AI keys are added in later phases.
+# - DATABASE_URL: your Neon PostgreSQL connection string
+# - AUTH_SECRET: authentication secret
+# Not required for Phase 0; database and auth keys are added in later phases.
 
 # 5. Run the development server
 npm run dev
@@ -60,7 +63,7 @@ See `docs/implementation-plan.md` for the full 8-phase roadmap.
 ## Security
 
 - Never commit `.env.local`, secrets, customer data, or database dumps.
-- Supabase secret keys are server-side only.
+- `DATABASE_URL` and `AUTH_SECRET` are server-side only.
 - All external actions require approval before execution.
 - See `docs/architecture.md` for full security principles.
 

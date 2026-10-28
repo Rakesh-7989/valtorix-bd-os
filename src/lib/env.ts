@@ -8,8 +8,8 @@
 export interface EnvConfig {
   appName: string;
   appUrl: string;
-  supabaseUrl?: string;
-  supabasePublishableKey?: string;
+  databaseUrl?: string;
+  authSecret?: string;
   aiProvider?: string;
   ollamaBaseUrl?: string;
 }
@@ -20,8 +20,8 @@ function getEnv(): EnvConfig {
       process.env.NEXT_PUBLIC_APP_NAME ?? "VALTORIX BD OS",
     appUrl:
       process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    supabasePublishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    databaseUrl: process.env.DATABASE_URL,
+    authSecret: process.env.AUTH_SECRET,
     aiProvider: process.env.AI_PROVIDER,
     ollamaBaseUrl: process.env.OLLAMA_BASE_URL,
   };
@@ -30,11 +30,19 @@ function getEnv(): EnvConfig {
 export const env = getEnv();
 
 /**
- * Returns whether Supabase is configured (Phase 1+).
- * Safe to call in client components.
+ * Returns whether Neon database is configured (Phase 1+).
+ * Safe to call in server components and API routes.
+ * Never expose DATABASE_URL to the client bundle.
  */
-export function isSupabaseConfigured(): boolean {
-  return Boolean(env.supabaseUrl && env.supabasePublishableKey);
+export function isDatabaseConfigured(): boolean {
+  return Boolean(env.databaseUrl);
+}
+
+/**
+ * Returns whether authentication is configured (Phase 1+).
+ */
+export function isAuthConfigured(): boolean {
+  return Boolean(env.authSecret);
 }
 
 /**

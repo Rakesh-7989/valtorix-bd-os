@@ -11,10 +11,11 @@ VALTORIX BD OS is an AI-assisted Business Development Automation platform. The f
 | Framework | Next.js App Router (TypeScript) | Frontend + API routes |
 | Styling | Tailwind CSS + custom components | Responsive UI |
 | Package Manager | npm | Dependency management |
-| Database | Supabase PostgreSQL (Phase 1) | CRM records, workflows, audit logs |
-| Authentication | Supabase Auth (Phase 1) | User sign-in, sessions |
-| Authorization | Role-based + PostgreSQL RLS | Org-scoped data access |
+| Database | Neon PostgreSQL (Phase 1) | CRM records, workflows, audit logs |
+| Authentication | Separate provider (Phase 1) | User sign-in, sessions (e.g., NextAuth, credentials, or Clerk) |
+| Authorization | Role-based + PostgreSQL RLS | Org-scoped data access (managed via SQL) |
 | Validation | Zod | API input validation |
+| Database Access | Drizzle ORM + @neondatabase/serverless | Type-safe queries and migrations |
 | AI | Ollama (local) / MockAIProvider (demo) | Research, scoring, drafts |
 | Background Jobs | Database-backed job table (Phase 4) | Scheduled tasks, retries |
 | Testing | Vitest + Playwright | Unit, integration, E2E |
@@ -40,11 +41,23 @@ valtorix-bd-os/
 └── README.md
 ```
 
+## Neon vs Supabase — Key Differences
+
+| Aspect | Supabase (original plan) | Neon (current choice) |
+|--------|-------------------------|----------------------|
+| Database | PostgreSQL (managed) | PostgreSQL (serverless) |
+| Authentication | Integrated Supabase Auth | Separate provider (NextAuth/Clerk/custom) |
+| File Storage | Integrated Supabase Storage | Separate (local filesystem or S3-compatible) |
+| RLS | Dashboard-managed policies | SQL-managed policies |
+| Local development | Supabase CLI + Docker | Neon CLI or direct connection string |
+| Vercel integration | Straightforward | Straightforward (serverless driver) |
+
 ## Security Principles
 
-- Supabase service-role/secret key is server-side only; never in the browser.
-- Client uses publishable key with Row Level Security (RLS) on every table.
+- Neon connection string (`DATABASE_URL`) is server-side only; never in the browser.
+- Authentication secret (`AUTH_SECRET`) is server-side only.
 - Organization membership enforced server-side; hiding UI buttons is not sufficient.
+- PostgreSQL RLS policies managed via SQL migrations; every tenant-owned table needs appropriate policies.
 - External actions (email, proposals, contracts) require valid approval for the exact payload.
 - Audit logs are append-only; AI outputs are treated as untrusted/unverified.
 - No secrets, customer data, or database dumps in Git.
@@ -54,6 +67,7 @@ valtorix-bd-os/
 - Zero mandatory paid services for the MVP.
 - No paid AI APIs or cloud inference by default.
 - Ollama runs locally on the developer's Windows PC.
+- Neon free tier: 1 GB storage, 100 CU-hours per project; compute scales to zero after inactivity.
 - Vercel preview deployments are optional and subject to plan terms.
 
 ## Deployment Notes
@@ -62,3 +76,4 @@ valtorix-bd-os/
 - Hosted previews use `MockAIProvider` or show AI features as unavailable.
 - For hosted deployments with local AI, a separate companion worker on the Windows PC polls for jobs via authenticated outbound connection.
 - Do not expose Ollama ports to the public internet.
+- Neon compute auto-suspends after inactivity; first request may have a cold-start delay.
