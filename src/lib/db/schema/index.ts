@@ -16,3 +16,8 @@ export * from "./lead_tags";
 export * from "./lead_scores";
 export * from "./research_records";
 export * from "./outreach_drafts";
+export * from "./workflows";
+export * from "./workflow_runs";
+export * from "./jobs";
+export * from "./approvals";
+export * from "./audit_logs";
