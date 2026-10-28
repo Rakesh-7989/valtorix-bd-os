@@ -1,18 +1,172 @@
-import { EmptyState } from "@/components/empty-state";
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+type Meeting = {
+  id: string;
+  deal_id: string;
+  title: string;
+  agenda: string | null;
+  notes: string | null;
+  scheduled_at: string;
+  duration_minutes: number;
+  status: string;
+  created_at: string;
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  scheduled: "bg-blue-50 text-blue-700",
+  completed: "bg-emerald-50 text-emerald-700",
+  cancelled: "bg-rose-50 text-rose-700",
+  no_show: "bg-amber-50 text-amber-700",
+};
+
+async function fetchMeetings(dealId?: string): Promise<Meeting[]> {
+  const params = new URLSearchParams();
+  if (dealId) params.set("deal_id", dealId);
+  params.set("limit", "100");
+
+  const res = await fetch(`/api/meetings?${params}`, {
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (res.ok) {
+    const data = await res.json();
+    return data.data || [];
+  }
+  return [];
+}
 
 export default function MeetingsPage() {
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dealFilter, setDealFilter] = useState("");
+  const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      const data = await fetchMeetings(dealFilter || undefined);
+      if (mounted) {
+        setMeetings(data);
+        setLoading(false);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [dealFilter, refresh]);
+
+  const reload = () => setRefresh((r) => r + 1);
+
+  if (loading) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center pl-64">
+        <div className="text-zinc-500">Loading meetings...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-zinc-900">Meetings</h2>
-        <p className="text-zinc-500">Discovery calls, scheduling, and action items.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-zinc-900">Meetings</h2>
+          <p className="text-zinc-500">
+            Track discovery calls, meetings, and client interactions.
+          </p>
+        </div>
+        <Link
+          href="/meetings/new"
+          className="px-4 py-2 bg-zinc-900 text-white font-medium rounded-lg hover:bg-zinc-800 transition-colors"
+        >
+          + Schedule Meeting
+        </Link>
       </div>
 
-      <EmptyState
-        icon="📅"
-        title="Meetings coming soon"
-        description="Meeting records and discovery templates will be available in Phase 6."
-      />
+      <div className="flex flex-col md:flex-row md:items-end gap-4">
+        <div className="flex-1">
+          <input
+            type="text"
+            placeholder="Filter by deal ID..."
+            value={dealFilter}
+            onChange={(e) => setDealFilter(e.target.value)}
+            className="w-full px-3 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          />
+        </div>
+        <button
+          onClick={() => setRefresh((r) => r + 1)}
+          className="px-4 py-2 bg-zinc-900 text-white font-medium rounded-lg hover:bg-zinc-800 transition-colors"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden">
+        <table className="w-full text-left">
+          <thead className="bg-zinc-50 border-b border-zinc-200">
+            <tr>
+              <th className="px-4 py-3 text-xs font-semibold text-zinc-500 uppercase">
+                Title
+              </th>
+              <th className="px-4 py-3 text-xs font-semibold text-zinc-500 uppercase">
+                Deal ID
+              </th>
+              <th className="px-4 py-3 text-xs font-semibold text-zinc-500 uppercase">
+                Status
+              </th>
+              <th className="px-4 py-3 text-xs font-semibold text-zinc-500 uppercase">
+                Scheduled
+              </th>
+              <th className="px-4 py-3 text-xs font-semibold text-zinc-500 uppercase text-right">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-100">
+            {meetings.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-zinc-400">
+                  No meetings found.
+                </td>
+              </tr>
+            ) : (
+              meetings.map((m) => (
+                <tr key={m.id} className="hover:bg-zinc-50 transition-colors">
+                  <td className="px-4 py-3 text-zinc-900 font-medium">
+                    {m.title}
+                  </td>
+                  <td className="px-4 py-3 text-zinc-600 text-xs font-mono">
+                    {m.deal_id.slice(0, 8)}...
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
+                        STATUS_COLORS[m.status] || "bg-zinc-50 text-zinc-700"
+                      }`}
+                    >
+                      {m.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-zinc-600">
+                    {new Date(m.scheduled_at).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Link
+                      href={`/meetings/${m.id}`}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

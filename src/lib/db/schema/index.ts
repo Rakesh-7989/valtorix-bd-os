@@ -25,3 +25,8 @@ export * from "./email_deliveries";
 export * from "./suppression_records";
 export * from "./followup_rules";
 export * from "./followup_tasks";
+export * from "./meetings";
+export * from "./meeting_actions";
+export * from "./proposals";
+export * from "./proposal_items";
+export * from "./handover_records";
