@@ -21,3 +21,7 @@ export * from "./workflow_runs";
 export * from "./jobs";
 export * from "./approvals";
 export * from "./audit_logs";
+export * from "./email_deliveries";
+export * from "./suppression_records";
+export * from "./followup_rules";
+export * from "./followup_tasks";

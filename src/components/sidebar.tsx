@@ -15,6 +15,8 @@ const NAV_ITEMS = [
   { href: "/reports", label: "Reports", icon: "📈" },
   { href: "/ai-research", label: "AI Research", icon: "🤖" },
   { href: "/ai-outreach", label: "AI Outreach", icon: "✉️" },
+  { href: "/email-queue", label: "Email Queue", icon: "📬" },
+  { href: "/followup-center", label: "Follow-ups", icon: "🔄" },
 ];
 
 export function Sidebar() {
