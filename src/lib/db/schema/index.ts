@@ -13,3 +13,6 @@ export * from "./deals";
 export * from "./tasks";
 export * from "./tags";
 export * from "./lead_tags";
+export * from "./lead_scores";
+export * from "./research_records";
+export * from "./outreach_drafts";
