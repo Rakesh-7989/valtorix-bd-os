@@ -68,7 +68,7 @@ export default function DashboardPage() {
               </div>
             ))}
             <div className="text-center py-4 text-zinc-400 text-sm">
-              These are demo activities. Real data will appear after Phase 1 (Supabase) is connected.
+              These are demo activities. Real data will appear after database connection is configured.
             </div>
           </div>
         </section>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
             ))}
           </div>
           <div className="mt-4 pt-4 border-t border-zinc-100 text-xs text-zinc-400">
-            Pipeline values are demo data. Connect Supabase in Phase 1 for real records.
+            Pipeline values are demo data. Connect database in Phase 1 for real records.
           </div>
         </section>
       </div>
@@ -113,7 +113,7 @@ export default function DashboardPage() {
           ))}
         </div>
         <div className="mt-4 pt-4 border-t border-zinc-100 text-xs text-zinc-400">
-          Phase 0 is the foundation shell. CRM, AI, and workflow modules arrive in Phases 1–4.
+          Phase 0 is the foundation shell. CRM, AI, and workflow modules arrive in Phases 1–4. Database is connected in Phase 1.
         </div>
       </section>
     </div>

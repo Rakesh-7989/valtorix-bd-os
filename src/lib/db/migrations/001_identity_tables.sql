@@ -84,5 +84,8 @@ ALTER TABLE permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE role_permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 
--- RLS policies will be added in Phase 1 after auth is configured.
--- For now, all tables are RLS-enabled but have no policies (deny-all by default).
+-- Row Level Security is enabled on all tables for defense in depth.
+-- Phase 1 enforcement: Application-level authorization via NextAuth.js middleware
+-- and API route checks. The app connects as database owner (bypasses RLS), so
+-- RLS policies are not yet created. Phase 2+ will add proper tenant-scoped RLS
+-- policies when user-scoped database connections are introduced.
