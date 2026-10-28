@@ -13,6 +13,9 @@
  * - A seed admin user (admin@valtorix.com / admin123)
  */
 
+import { config } from "dotenv";
+config();
+
 import { db } from "../src/lib/db/client";
 import { roles } from "../src/lib/db/schema/roles";
 import { permissions } from "../src/lib/db/schema/permissions";
